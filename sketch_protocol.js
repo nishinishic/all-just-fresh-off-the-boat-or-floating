@@ -1,3 +1,5 @@
+// Written with reference with p5 WebRTC, using the p5LiveMedia library contributed by Shawn Van Every and others  
+
 let myVideo;
 let otherVideo;
 let noise;
