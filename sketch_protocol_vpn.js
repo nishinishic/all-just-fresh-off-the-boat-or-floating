@@ -43,11 +43,11 @@ function setup() {
         }
       ];
 
-      // let signalingServer = "ws://152.42.216.84:3000/socket.io/"; // Replace with your signaling server URL
+      // let signalingServer = "wss://152.42.216.84:3000/socket.io/"; // Replace with your signaling server URL
 
   // set socket.io client config 
          // Connect to the Socket.IO server
-         const socket = io('http://152.42.216.84:3000', {
+         const socket = io('https://152.42.216.84:3000', {
           transports: ['websocket', 'polling']
           });
           
