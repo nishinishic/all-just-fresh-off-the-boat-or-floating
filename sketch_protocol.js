@@ -1,5 +1,3 @@
-// Written with reference with p5 WebRTC, using the p5LiveMedia library contributed by Shawn Van Every and others  
-
 let myVideo;
 let otherVideo;
 let noise;
@@ -24,7 +22,8 @@ let edgevideoPlaying = false;
 let tunnelvideoPlaying = false;
 let walkvideoPlaying = false;
 
-
+let p5l;
+let signalingServer = "ws://152.42.216.84:3000/socket.io/"; // Replace with your signaling server URL
 
 
 function setup() {
@@ -34,8 +33,54 @@ function setup() {
   let constraints = {audio: true, video: true};
   myVideo = createCapture(constraints, 
     function(stream) {
-	  let p5l = new p5LiveMedia(this, "CAPTURE", stream, "BLENDEDVIDEO")
-	  p5l.on('stream', gotStream);
+      // Modify this part to include STUN/TURN servers and signaling server
+      let iceServers = [
+        { urls: "stun:stun.l.google.com:19302" }, // Example STUN server
+        { 
+          urls: "turn:152.42.216.84:3478", // Replace with your TURN server details
+          username: "TurnVPN", // Replace with your TURN server username
+          credential: "TurnVPNCredential" // Replace with your TURN server credential
+        }
+      ];
+
+      // let signalingServer = "ws://152.42.216.84:3000/socket.io/"; // Replace with your signaling server URL
+
+  // set socket.io client config 
+         // Connect to the Socket.IO server
+         const socket = io('http://152.42.216.84:3000', {
+          transports: ['websocket', 'polling']
+          });
+          
+         // Handle connection
+         socket.on('connect', () => {
+             console.log('Connected to server');
+         });
+ 
+         // Handle custom events
+         socket.on('signal', (data) => {
+             console.log('Received signal:', data);
+             // Handle the signal data here
+         });
+ 
+         // Example function to send a signal
+         function sendSignal(peerId, signal) {
+             socket.emit('signal', { peerId, signal });
+         }
+ 
+         // Example function to join a room
+         function joinRoom(roomId, peerId) {
+             socket.emit('join', roomId, peerId);
+         }
+ 
+         // Handle disconnection
+         socket.on('disconnect', () => {
+             console.log('Disconnected from server');
+         });
+
+
+      // Create p5LiveMedia instance with STUN/TURN servers and signaling server
+      p5l = new p5LiveMedia(this, "CAPTURE", stream, "BLENDEDVIDEO", signalingServer, { iceServers: iceServers });
+      p5l.on('stream', gotStream);
     }
   );  
   myVideo.elt.muted = true;     
@@ -701,10 +746,6 @@ function draw() {
     text('She said,\n\n "All that you touch\n You Change.\n\n All that you Change\nChanges you.\n\n The only lasting truth\n Is change.\n\n God\nIs Change.\n\nEARTHSEED: THE BOOKS OF THE LIVING\n by Lauren Oya Olamina" ', width / 2 - 500, height / 2 - 250, 1050);
     }
  
-  
-
- 
-
 }
 
 // function notifyUser() {
@@ -712,12 +753,13 @@ function draw() {
 //   narrative.speak("Another user has joined.");
 // }
 
+
 // We got a new stream!
 function gotStream(stream, id) {
   // This is just like a video/stream from createCapture(VIDEO)
   otherVideo = stream;
   //otherVideo.id and id are the same and unique identifiers
-  // otherVideo.hide();
+  otherVideo.hide();
   // notifyUser(); // Notify the user when otherVideo is streamed
 }
 
