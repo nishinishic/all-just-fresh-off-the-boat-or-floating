@@ -23,7 +23,7 @@ let tunnelvideoPlaying = false;
 let walkvideoPlaying = false;
 
 let p5l;
-let signalingServer = "ws://152.42.216.84:3000/socket.io/"; // Replace with your signaling server URL
+let signalingServer = "wss://152.42.216.84:3000/socket.io/"; // Replace with your signaling server URL
 
 
 function setup() {
@@ -166,7 +166,7 @@ function setup() {
 
   setTimeout(() => {
     narrative.setVoice('Vicki');
-    narrative.speak("your IP address is: 192.168.xx.xx.");
+    narrative.speak("your IP address now is: 10.8.0.1");
   }, 60000);
 
   setTimeout(() => {
@@ -246,7 +246,7 @@ function setup() {
 
   setTimeout(() => {
     narrative.setVoice('Vicki');
-    narrative.speak("you are now proxied to each other.");
+    narrative.speak("you are now routed through each other.");
   }, 160000);
 
     // Load video 'edge' 
@@ -316,7 +316,7 @@ function setup() {
 
   setTimeout(() => {
     narrative.setVoice('Vicki');
-    narrative.speak("be proxy. ");
+    narrative.speak("reroute yourself. displace yourself.");
   }, 215000);
 
   setTimeout(() => {
