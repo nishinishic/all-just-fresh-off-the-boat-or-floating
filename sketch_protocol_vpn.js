@@ -23,7 +23,7 @@ let tunnelvideoPlaying = false;
 let walkvideoPlaying = false;
 
 let p5l;
-let signalingServer = "wss://152.42.216.84:3000/socket.io/"; // Replace with your signaling server URL
+let signalingServer = "wss://floating-fob.live:443/socket.io/"; // Replace with your signaling server URL
 
 
 function setup() {
@@ -37,7 +37,7 @@ function setup() {
       let iceServers = [
         { urls: "stun:stun.l.google.com:19302" }, // Example STUN server
         { 
-          urls: "turn:152.42.216.84:3478", // Replace with your TURN server details
+          urls: "turns:floating-fob.live:3478", // Replace with your TURN server details
           username: "TurnVPN", // Replace with your TURN server username
           credential: "TurnVPNCredential" // Replace with your TURN server credential
         }
@@ -47,7 +47,7 @@ function setup() {
 
   // set socket.io client config 
          // Connect to the Socket.IO server
-         const socket = io('https://152.42.216.84:3000', {
+         const socket = io('https://floating-fob.live:443', {
           transports: ['websocket', 'polling']
           });
           
