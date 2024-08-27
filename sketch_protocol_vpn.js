@@ -23,7 +23,7 @@ let tunnelvideoPlaying = false;
 let walkvideoPlaying = false;
 
 let p5l;
-let signalingServer = "wss://floating-fob.live:443/socket.io/"; // Replace with your signaling server URL
+let signalingServer = "wss://floating-fob.live/socket.io/"; // Replace with your signaling server URL
 
 
 function setup() {
