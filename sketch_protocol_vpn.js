@@ -43,6 +43,21 @@ function setup() {
         }
       ];
 
+      let config = {
+        iceServers: iceServers,
+        iceTransportPolicy: 'all', // or 'relay' if you want to restrict to TURN only
+        iceCandidatePoolSize: 0 // Adjust based on your needs
+      };
+      
+      let peerConnection = new RTCPeerConnection(config);
+    
+      peerConnection.onicecandidate = event => {
+        if (event.candidate) {
+            // Send the candidate to the remote peer through your signaling server
+            signalingServer.send({ type: 'candidate', candidate: event.candidate });
+        }
+      };
+      
       // let signalingServer = "wss://152.42.216.84:3000/socket.io/"; // Replace with your signaling server URL
 
   // set socket.io client config 
