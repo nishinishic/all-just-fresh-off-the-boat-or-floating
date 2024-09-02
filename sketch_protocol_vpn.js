@@ -23,7 +23,8 @@ let tunnelvideoPlaying = false;
 let walkvideoPlaying = false;
 
 let p5l;
-let signalingServer = "wss://floating-fob.live:443/socket.io/"; // Client-side WebSocket URL
+let socket;
+let signalingServer = "https://floating-fob.live:443"; // Client-side WebSocket URL
 
 
 function setup() {
@@ -53,39 +54,44 @@ function setup() {
     
       peerConnection.onicecandidate = event => {
         if (event.candidate) {
-            // Send the candidate to the remote peer through your signaling server
-            signalingServer.send({ type: 'candidate', candidate: event.candidate });
+          // Send the candidate to the remote peer through your signaling server
+          socket.emit('candidate', { candidate: event.candidate });
         }
       };
-      
-      // let signalingServer = "wss://152.42.216.84:3000/socket.io/"; // Replace with your signaling server URL
-
+    
   // set socket.io client config 
-         // Connect to the Socket.IO server
-         const socket = io('https://floating-fob.live:443', {
-          transports: ['websocket', 'polling']
-          });
+        // Connect to the Socket.IO server
+        socket = io(signalingServer, {
+          transports: ['websocket', 'polling'],
+          path: '/socket.io/',
+          secure: true,
+          reconnect: true
+        });
           
-         // Handle connection
-         socket.on('connect', () => {
-             console.log('Connected to server');
-         });
+        // Handle connection
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
  
-         // Handle custom events
-         socket.on('signal', (data) => {
-             console.log('Received signal:', data);
-             // Handle the signal data here
-         });
+        // Handle custom events
+        socket.on('signal', data => {
+          console.log('Received signal:', data);
+          // Handle the signal data here
+          if (data.signal) {
+            peerConnection.setRemoteDescription(new RTCSessionDescription(data.signal));
+            // Add code to handle ICE candidates if needed
+          }
+        });
+
+        // Example function to send a signal
+        function sendSignal(peerId, signal) {
+          socket.emit('signal', { peerId, signal });
+        }
  
-         // Example function to send a signal
-         function sendSignal(peerId, signal) {
-             socket.emit('signal', { peerId, signal });
-         }
- 
-         // Example function to join a room
-         function joinRoom(roomId, peerId) {
-             socket.emit('join', roomId, peerId);
-         }
+        // Example function to join a room
+        function joinRoom(roomId, peerId) {
+          socket.emit('join', roomId, peerId);
+        }
  
          // Handle disconnection
          socket.on('disconnect', () => {
@@ -93,11 +99,12 @@ function setup() {
          });
 
 
-      // Create p5LiveMedia instance with STUN/TURN servers and signaling server
-      p5l = new p5LiveMedia(this, "CAPTURE", stream, "BLENDEDVIDEO", signalingServer, { iceServers: iceServers });
-      p5l.on('stream', gotStream);
-    }
-  );  
+  // Create p5LiveMedia instance with STUN/TURN servers and signaling server
+  p5l = new p5LiveMedia(this, "CAPTURE", stream, "BLENDEDVIDEO", signalingServer, { iceServers: iceServers });
+  p5l.on('stream', gotStream);
+  });  
+
+
   myVideo.elt.muted = true;     
   myVideo.hide();
 
@@ -330,7 +337,7 @@ function setup() {
   }, 208000);
 
   setTimeout(() => {
-    narrative.setVoice('Vicki');
+    narrative.setVoice('Vicki'); 
     narrative.speak("reroute yourself. displace yourself.");
   }, 215000);
 
@@ -788,4 +795,3 @@ function windowResized() {
 function mousePressed() {
   userStartAudio();
 }
-
