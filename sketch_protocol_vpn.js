@@ -188,7 +188,7 @@ function setup() {
 
   setTimeout(() => {
     narrative.setVoice('Vicki');
-    narrative.speak("your IP address now is: 10.8.0.1");
+    narrative.speak("your IP address is: ");
   }, 60000);
 
   setTimeout(() => {
@@ -297,7 +297,7 @@ function setup() {
   
   setTimeout(() => {
     narrative.setVoice('Vicki');
-    narrative.speak("your, address now is: ***. **. **. **.");
+    narrative.speak("your, address now is: ***. **. **. **."); // your IP address now is: 10.8.0.1
   }, 181000);
 
   setTimeout(() => {
@@ -379,6 +379,7 @@ function setup() {
   setTimeout(() => {
     narrative.setVoice('Vicki');
     narrative.speak("now, your, encrypted, addresses are, 0. x. *.*.*.*.*.*.");
+    // your, address now is: ***. **. **. **
   }, 265000);
 
   setTimeout(() => {
